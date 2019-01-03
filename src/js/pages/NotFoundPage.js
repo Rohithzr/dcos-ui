@@ -7,19 +7,7 @@ import AlertPanelHeader from "../components/AlertPanelHeader";
 import Page from "../components/Page";
 import SidebarActions from "../events/SidebarActions";
 
-var NotFoundPage = React.createClass({
-  displayName: "NotFoundPage",
-
-  statics: {
-    // Static life cycle method from react router, that will be called
-    // 'when a handler is about to render', i.e. on route change:
-    // https://github.com/rackt/react-router/
-    // blob/master/docs/api/components/RouteHandler.md
-    willTransitionTo() {
-      SidebarActions.close();
-    }
-  },
-
+class NotFoundPage extends React.Component {
   render() {
     return (
       <Page title="Page Not Found">
@@ -36,6 +24,16 @@ var NotFoundPage = React.createClass({
       </Page>
     );
   }
-});
+}
+
+NotFoundPage.displayName = "NotFoundPage";
+
+// Static life cycle method from react router, that will be called
+// 'when a handler is about to render', i.e. on route change:
+// https://github.com/rackt/react-router/
+// blob/master/docs/api/components/RouteHandler.md
+NotFoundPage.willTransitionTo = () => {
+  SidebarActions.close();
+};
 
 module.exports = NotFoundPage;

@@ -9,25 +9,7 @@ import TimeSeriesChart from "./TimeSeriesChart";
 import TimeSeriesLabel from "./TimeSeriesLabel";
 import ValueTypes from "../../constants/ValueTypes";
 
-var HostTimeSeriesChart = React.createClass({
-  displayName: "HostTimeSeriesChart",
-
-  propTypes: {
-    data: PropTypes.array.isRequired,
-    refreshRate: PropTypes.number.isRequired,
-    roundUpValue: PropTypes.number,
-    minMaxY: PropTypes.number,
-    colorIndex: PropTypes.number
-  },
-
-  getDefaultProps() {
-    return {
-      roundUpValue: 5,
-      minMaxY: 10,
-      colorIndex: 0
-    };
-  },
-
+class HostTimeSeriesChart extends React.Component {
   getMaxY() {
     var props = this.props;
     var roundUpValue = props.roundUpValue;
@@ -44,7 +26,7 @@ var HostTimeSeriesChart = React.createClass({
     }
 
     return maxY;
-  },
+  }
 
   getData(props) {
     return [
@@ -54,7 +36,7 @@ var HostTimeSeriesChart = React.createClass({
         values: props.data
       }
     ];
-  },
+  }
 
   getChart(props) {
     return (
@@ -68,7 +50,7 @@ var HostTimeSeriesChart = React.createClass({
         />
       </Chart>
     );
-  },
+  }
 
   render() {
     const props = this.props;
@@ -86,6 +68,22 @@ var HostTimeSeriesChart = React.createClass({
       </div>
     );
   }
-});
+}
+
+HostTimeSeriesChart.displayName = "HostTimeSeriesChart";
+
+HostTimeSeriesChart.propTypes = {
+  data: PropTypes.array.isRequired,
+  refreshRate: PropTypes.number.isRequired,
+  roundUpValue: PropTypes.number,
+  minMaxY: PropTypes.number,
+  colorIndex: PropTypes.number
+};
+
+HostTimeSeriesChart.defaultProps = {
+  roundUpValue: 5,
+  minMaxY: 10,
+  colorIndex: 0
+};
 
 module.exports = withI18n()(HostTimeSeriesChart);

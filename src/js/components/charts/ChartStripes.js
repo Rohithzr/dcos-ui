@@ -1,15 +1,7 @@
 import PropTypes from "prop-types";
 import React from "react";
 
-var ChartStripes = React.createClass({
-  displayName: "ChartStripes",
-
-  propTypes: {
-    count: PropTypes.number.isRequired,
-    height: PropTypes.number.isRequired,
-    width: PropTypes.number.isRequired
-  },
-
+class ChartStripes extends React.Component {
   getStripes(props) {
     var count = props.count;
     var width = props.width / (2 * count);
@@ -32,11 +24,19 @@ var ChartStripes = React.createClass({
           />
         );
       });
-  },
+  }
 
   render() {
     return <g>{this.getStripes(this.props)}</g>;
   }
-});
+}
+
+ChartStripes.displayName = "ChartStripes";
+
+ChartStripes.propTypes = {
+  count: PropTypes.number.isRequired,
+  height: PropTypes.number.isRequired,
+  width: PropTypes.number.isRequired
+};
 
 module.exports = ChartStripes;

@@ -7,29 +7,28 @@ import { Link, routerShape } from "react-router";
 
 import ServiceStatusIcon from "./ServiceStatusIcon";
 
-const ServiceList = React.createClass({
-  displayName: "ServiceList",
+const METHODS_TO_BIND = [
+  "handleServiceClick",
+  "getServices",
+  "getList",
+  "getNoServicesMessage"
+];
 
-  propTypes: {
-    services: PropTypes.array.isRequired
-  },
+class ServiceList extends React.Component {
+  constructor() {
+    super(...arguments);
 
-  contextTypes: {
-    router: routerShape
-  },
-
-  getDefaultProps() {
-    return {
-      services: []
-    };
-  },
+    METHODS_TO_BIND.forEach(method => {
+      this[method] = this[method].bind(this);
+    });
+  }
 
   shouldComponentUpdate(nextProps, nextState) {
     var changedState =
       nextState !== undefined && !isEqual(this.state, nextState);
 
     return !isEqual(this.props, nextProps) || changedState;
-  },
+  }
 
   handleServiceClick(service, event) {
     // Open service in new window/tab if service has a web URL
@@ -43,7 +42,7 @@ const ServiceList = React.createClass({
     // Modifier key not pressed or service didn't have a web URL, open detail
     event.preventDefault();
     this.context.router.push(`/services/detail/${id}`);
-  },
+  }
 
   getServices(services) {
     return services.map(service => {
@@ -90,7 +89,7 @@ const ServiceList = React.createClass({
         ]
       };
     });
-  },
+  }
 
   getNoServicesMessage() {
     return (
@@ -104,7 +103,7 @@ const ServiceList = React.createClass({
         </Trans>
       </div>
     );
-  },
+  }
 
   getList() {
     const props = this.props;
@@ -119,19 +118,29 @@ const ServiceList = React.createClass({
         />
       </div>
     );
-  },
+  }
 
-  getContent() {
+  render() {
     if (this.props.services.length === 0) {
       return this.getNoServicesMessage();
     } else {
       return this.getList();
     }
-  },
-
-  render() {
-    return this.getContent();
   }
-});
+}
+
+ServiceList.displayName = "ServiceList";
+
+ServiceList.propTypes = {
+  services: PropTypes.array.isRequired
+};
+
+ServiceList.contextTypes = {
+  router: routerShape
+};
+
+ServiceList.defaultProps = {
+  services: []
+};
 
 module.exports = ServiceList;

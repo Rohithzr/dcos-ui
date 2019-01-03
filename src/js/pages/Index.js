@@ -1,6 +1,7 @@
 import classNames from "classnames";
 import isEqual from "lodash.isequal";
 import React from "react";
+import mixin from "reactjs-mixin";
 import { CSSTransitionGroup } from "react-transition-group";
 
 import { StoreMixin } from "mesosphere-shared-reactjs";
@@ -27,20 +28,29 @@ function getSidebarState() {
   };
 }
 
-var Index = React.createClass({
-  displayName: "Index",
+const METHODS_TO_BIND = [
+  "handleWindowResize",
+  "onConfigError",
+  "onSideBarChange",
+  "onMesosStoreChange"
+];
 
-  mixins: [StoreMixin],
+class Index extends mixin(StoreMixin) {
+  constructor() {
+    super(...arguments);
 
-  getInitialState() {
-    return {
+    this.state = {
       mesosSummaryErrorCount: 0,
       showErrorModal: false,
       modalErrorMsg: "",
       configErrorCount: 0,
       previousWindowWidth: global.innerWidth
     };
-  },
+
+    METHODS_TO_BIND.forEach(method => {
+      this[method] = this[method].bind(this);
+    });
+  }
 
   componentWillMount() {
     MetadataStore.init();
@@ -61,7 +71,7 @@ var Index = React.createClass({
         suppressUpdate: true
       }
     ];
-  },
+  }
 
   componentDidMount() {
     SidebarStore.addChangeListener(
@@ -72,11 +82,11 @@ var Index = React.createClass({
 
     ConfigStore.fetchCCID();
     ConfigStore.addChangeListener(EventTypes.CONFIG_ERROR, this.onConfigError);
-  },
+  }
 
   shouldComponentUpdate(nextProps, nextState) {
     return !(isEqual(this.props, nextProps) && isEqual(this.state, nextState));
-  },
+  }
 
   componentWillUnmount() {
     global.removeEventListener("resize", this.handleWindowResize);
@@ -93,11 +103,11 @@ var Index = React.createClass({
       EventTypes.MESOS_STATE_CHANGE,
       this.onMesosStoreChange
     );
-  },
+  }
 
   onSideBarChange() {
     this.forceUpdate();
-  },
+  }
 
   onConfigError() {
     this.setState({ configErrorCount: this.state.configErrorCount + 1 });
@@ -105,22 +115,22 @@ var Index = React.createClass({
     if (this.state.configErrorCount < Config.delayAfterErrorCount) {
       ConfigStore.fetchConfig();
     }
-  },
+  }
 
   onSummaryStoreSuccess() {
     // Reset count as we've just received a successful response
     if (this.state.mesosSummaryErrorCount > 0) {
       this.setState({ mesosSummaryErrorCount: 0 });
     }
-  },
+  }
 
   onSummaryStoreError() {
     this.setState({
       mesosSummaryErrorCount: this.state.mesosSummaryErrorCount + 1
     });
-  },
+  }
 
-  onMesosStoreChange() {},
+  onMesosStoreChange() {}
 
   getErrorScreen(showErrorScreen) {
     if (!showErrorScreen) {
@@ -128,7 +138,7 @@ var Index = React.createClass({
     }
 
     return <RequestErrorMsg />;
-  },
+  }
 
   getScreenOverlays(showErrorScreen) {
     if (!showErrorScreen) {
@@ -140,7 +150,7 @@ var Index = React.createClass({
         {this.getErrorScreen(showErrorScreen)}
       </div>
     );
-  },
+  }
 
   handleWindowResize() {
     const currentWindowWidth = global.innerWidth;
@@ -166,7 +176,7 @@ var Index = React.createClass({
     this.setState({
       previousWindowWidth: currentWindowWidth
     });
-  },
+  }
 
   renderOverlay() {
     const { isVisible } = getSidebarState();
@@ -191,7 +201,7 @@ var Index = React.createClass({
         </CSSTransitionGroup>
       );
     }
-  },
+  }
 
   render() {
     const { isVisible } = getSidebarState();
@@ -221,6 +231,8 @@ var Index = React.createClass({
       </div>
     );
   }
-});
+}
+
+Index.displayName = "Index";
 
 module.exports = Index;

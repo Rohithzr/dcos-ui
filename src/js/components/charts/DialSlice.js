@@ -2,14 +2,7 @@ import classNames from "classnames";
 import PropTypes from "prop-types";
 import React from "react";
 
-var DialSlice = React.createClass({
-  displayName: "DialSlice",
-
-  propTypes: {
-    colorIndex: PropTypes.node,
-    path: PropTypes.string.isRequired
-  },
-
+class DialSlice extends React.Component {
   render() {
     var classes = {
       arc: true
@@ -25,6 +18,13 @@ var DialSlice = React.createClass({
       </g>
     );
   }
-});
+}
+
+DialSlice.displayName = "DialSlice";
+
+DialSlice.propTypes = {
+  colorIndex: PropTypes.node,
+  path: PropTypes.string.isRequired
+};
 
 module.exports = DialSlice;

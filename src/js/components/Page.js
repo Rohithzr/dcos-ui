@@ -1,6 +1,7 @@
 import classNames from "classnames/dedupe";
 import PropTypes from "prop-types";
 import React from "react";
+import mixin from "reactjs-mixin";
 import { StoreMixin } from "mesosphere-shared-reactjs";
 
 import { MountService } from "foundation-ui";
@@ -54,23 +55,7 @@ PageHeader.propTypes = {
   disabledActions: PropTypes.bool
 };
 
-var Page = React.createClass({
-  displayName: "Page",
-
-  mixins: [InternalStorageMixin, StoreMixin],
-
-  propTypes: {
-    className: PropTypes.oneOfType([
-      PropTypes.array,
-      PropTypes.object,
-      PropTypes.string
-    ]),
-    dontScroll: PropTypes.bool,
-    flushBottom: PropTypes.bool,
-    navigation: PropTypes.oneOfType([PropTypes.object, PropTypes.string]),
-    title: PropTypes.oneOfType([PropTypes.object, PropTypes.string])
-  },
-
+class Page extends mixin(InternalStorageMixin, StoreMixin) {
   componentWillMount() {
     this.store_listeners = [
       {
@@ -78,14 +63,14 @@ var Page = React.createClass({
         events: ["widthChange"]
       }
     ];
-  },
+  }
 
   componentDidMount() {
     this.internalStorage_set({
       rendered: true
     });
     this.forceUpdate();
-  },
+  }
 
   onSidebarStoreWidthChange() {
     ScrollbarUtil.updateWithRef(this.refs.gemini);
@@ -102,7 +87,7 @@ var Page = React.createClass({
     }
 
     return null;
-  },
+  }
 
   getNavigation(navigation) {
     if (!navigation) {
@@ -110,14 +95,14 @@ var Page = React.createClass({
     }
 
     return <div className="page-header-navigation">{navigation}</div>;
-  },
+  }
 
   getPageHeader() {
     return TemplateUtil.getChildOfType(
       this.props.children,
       this.constructor.Header
     );
-  },
+  }
 
   getContent() {
     const { dontScroll, flushBottom } = this.props;
@@ -147,7 +132,7 @@ var Page = React.createClass({
         {content}
       </FluidGeminiScrollbar>
     );
-  },
+  }
 
   render() {
     const { className, navigation, dontScroll, title } = this.props;
@@ -168,8 +153,22 @@ var Page = React.createClass({
       </div>
     );
   }
-});
+}
 
 TemplateUtil.defineChildren(Page, { Header: PageHeader });
+
+Page.displayName = "Page";
+
+Page.propTypes = {
+  className: PropTypes.oneOfType([
+    PropTypes.array,
+    PropTypes.object,
+    PropTypes.string
+  ]),
+  dontScroll: PropTypes.bool,
+  flushBottom: PropTypes.bool,
+  navigation: PropTypes.oneOfType([PropTypes.object, PropTypes.string]),
+  title: PropTypes.oneOfType([PropTypes.object, PropTypes.string])
+};
 
 module.exports = Page;

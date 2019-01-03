@@ -7,23 +7,26 @@ import ClickToSelect from "../ClickToSelect";
 import Config from "../../config/Config";
 import ModalHeading from "../modals/ModalHeading";
 
-var VersionsModal = React.createClass({
-  displayName: "VersionsModal",
+const METHODS_TO_BIND = ["onClose"];
 
-  propTypes: {
-    onClose: PropTypes.func.isRequired,
-    versionDump: PropTypes.object.isRequired
-  },
+class VersionsModal extends React.Component {
+  constructor() {
+    super(...arguments);
+
+    METHODS_TO_BIND.forEach(method => {
+      this[method] = this[method].bind(this);
+    });
+  }
 
   onClose() {
     this.props.onClose();
-  },
+  }
 
   getContent() {
     var string = JSON.stringify(this.props.versionDump, null, 2);
 
     return <pre className="flush-bottom">{string}</pre>;
-  },
+  }
 
   render() {
     const header = (
@@ -44,6 +47,13 @@ var VersionsModal = React.createClass({
       </Modal>
     );
   }
-});
+}
+
+VersionsModal.displayName = "VersionsModal";
+
+VersionsModal.propTypes = {
+  onClose: PropTypes.func.isRequired,
+  versionDump: PropTypes.object.isRequired
+};
 
 module.exports = VersionsModal;

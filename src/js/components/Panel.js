@@ -12,32 +12,7 @@ const defaultClasses = {
     "panel-header panel-cell panel-cell-light panel-cell-narrow panel-cell-shorter"
 };
 
-var Panel = React.createClass({
-  displayName: "Panel",
-
-  propTypes: {
-    heading: PropTypes.node,
-    footer: PropTypes.node,
-
-    // classes
-    contentClass: PropTypes.oneOfType([
-      PropTypes.array,
-      PropTypes.object,
-      PropTypes.string
-    ]),
-    headingClass: PropTypes.oneOfType([
-      PropTypes.array,
-      PropTypes.object,
-      PropTypes.string
-    ]),
-    footerClass: PropTypes.oneOfType([
-      PropTypes.array,
-      PropTypes.object,
-      PropTypes.string
-    ]),
-    onClick: PropTypes.func
-  },
-
+class Panel extends React.Component {
   getNode(nodeName) {
     const { props } = this;
     const node = props[nodeName];
@@ -52,7 +27,7 @@ var Panel = React.createClass({
     );
 
     return <div className={classes}>{node}</div>;
-  },
+  }
 
   render() {
     const { props } = this;
@@ -70,6 +45,31 @@ var Panel = React.createClass({
       </div>
     );
   }
-});
+}
+
+Panel.displayName = "Panel";
+
+Panel.propTypes = {
+  heading: PropTypes.node,
+  footer: PropTypes.node,
+
+  // classes
+  contentClass: PropTypes.oneOfType([
+    PropTypes.array,
+    PropTypes.object,
+    PropTypes.string
+  ]),
+  headingClass: PropTypes.oneOfType([
+    PropTypes.array,
+    PropTypes.object,
+    PropTypes.string
+  ]),
+  footerClass: PropTypes.oneOfType([
+    PropTypes.array,
+    PropTypes.object,
+    PropTypes.string
+  ]),
+  onClick: PropTypes.func
+};
 
 module.exports = Panel;

@@ -3,37 +3,21 @@ import PropTypes from "prop-types";
 import React from "react";
 import ReactDOM from "react-dom";
 
-var AnimationCircle = React.createClass({
-  displayName: "AnimationCircle",
+class AnimationCircle extends React.Component {
+  constructor() {
+    super(...arguments);
 
-  propTypes: {
-    className: PropTypes.string,
-    transitionTime: PropTypes.number.isRequired,
-    position: PropTypes.array.isRequired,
-    radius: PropTypes.number,
-    cx: PropTypes.number,
-    cy: PropTypes.number
-  },
-
-  getInitialState() {
-    return {
+    this.state = {
       didRenderBefore: false
     };
-  },
-  getDefaultProps() {
-    return {
-      radius: 4,
-      cx: 0,
-      cy: 0
-    };
-  },
+  }
 
   componentDidMount() {
     d3.select(ReactDOM.findDOMNode(this)).attr(
       "transform",
       "translate(" + this.props.position + ")"
     );
-  },
+  }
 
   componentWillReceiveProps(nextProps) {
     const node = ReactDOM.findDOMNode(this);
@@ -56,7 +40,7 @@ var AnimationCircle = React.createClass({
       .duration(nextProps.transitionTime)
       .ease("linear")
       .attr("transform", "translate(" + nextProps.position + ")");
-  },
+  }
 
   render() {
     var props = this.props;
@@ -67,6 +51,23 @@ var AnimationCircle = React.createClass({
       <circle className={className} r={radius} cx={props.cx} cy={props.cy} />
     );
   }
-});
+}
+
+AnimationCircle.displayName = "AnimationCircle";
+
+AnimationCircle.propTypes = {
+  className: PropTypes.string,
+  transitionTime: PropTypes.number.isRequired,
+  position: PropTypes.array.isRequired,
+  radius: PropTypes.number,
+  cx: PropTypes.number,
+  cy: PropTypes.number
+};
+
+AnimationCircle.defaultProps = {
+  radius: 4,
+  cx: 0,
+  cy: 0
+};
 
 module.exports = AnimationCircle;

@@ -6,24 +6,7 @@ import TimeSeriesChart from "./TimeSeriesChart";
 import TimeSeriesLabel from "./TimeSeriesLabel";
 import Units from "../../utils/Units";
 
-var ResourceTimeSeriesChart = React.createClass({
-  displayName: "ResourceTimeSeriesChart",
-
-  propTypes: {
-    colorIndex: PropTypes.number.isRequired,
-    usedResources: PropTypes.object.isRequired,
-    totalResources: PropTypes.object.isRequired,
-    usedResourcesStates: PropTypes.object.isRequired,
-    mode: PropTypes.string,
-    refreshRate: PropTypes.number.isRequired
-  },
-
-  getDefaultProps() {
-    return {
-      colorIndex: 0
-    };
-  },
-
+class ResourceTimeSeriesChart extends React.Component {
   getData() {
     const { colorIndex, usedResourcesStates, mode } = this.props;
 
@@ -34,7 +17,7 @@ var ResourceTimeSeriesChart = React.createClass({
         values: usedResourcesStates[mode]
       }
     ];
-  },
+  }
 
   getHeadline(usedValue, totalValue) {
     const { mode } = this.props;
@@ -47,7 +30,7 @@ var ResourceTimeSeriesChart = React.createClass({
         Units.filesize(totalValue * 1024 * 1024, 0)
       );
     }
-  },
+  }
 
   getChart() {
     const { refreshRate } = this.props;
@@ -62,7 +45,7 @@ var ResourceTimeSeriesChart = React.createClass({
         />
       </Chart>
     );
-  },
+  }
 
   render() {
     const { colorIndex, mode, usedResources, totalResources } = this.props;
@@ -81,6 +64,21 @@ var ResourceTimeSeriesChart = React.createClass({
       </div>
     );
   }
-});
+}
+
+ResourceTimeSeriesChart.displayName = "ResourceTimeSeriesChart";
+
+ResourceTimeSeriesChart.propTypes = {
+  colorIndex: PropTypes.number.isRequired,
+  usedResources: PropTypes.object.isRequired,
+  totalResources: PropTypes.object.isRequired,
+  usedResourcesStates: PropTypes.object.isRequired,
+  mode: PropTypes.string,
+  refreshRate: PropTypes.number.isRequired
+};
+
+ResourceTimeSeriesChart.defaultProps = {
+  colorIndex: 0
+};
 
 module.exports = ResourceTimeSeriesChart;

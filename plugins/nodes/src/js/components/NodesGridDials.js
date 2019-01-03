@@ -9,29 +9,24 @@ import DialChart from "#SRC/js/components/charts/DialChart";
 import Icon from "#SRC/js/components/Icon";
 import ResourcesUtil from "#SRC/js/utils/ResourcesUtil";
 
-var colors = {
-  error: 2,
-  unused: "unused"
-};
+const COLOR_INDEX_ERROR = 2;
+const COLOR_INDEX_UNUSED = "unused";
 
-var NodesGridDials = React.createClass({
-  displayName: "NodesGridDials",
+const METHODS_TO_BIND = ["handleDialClick", "getDials"];
 
-  propTypes: {
-    hosts: PropTypes.array.isRequired,
-    selectedResource: PropTypes.string.isRequired,
-    serviceColors: PropTypes.object.isRequired,
-    resourcesByFramework: PropTypes.object.isRequired
-  },
+class NodesGridDials extends React.Component {
+  constructor() {
+    super(...arguments);
 
-  contextTypes: {
-    router: routerShape
-  },
+    METHODS_TO_BIND.forEach(m => {
+      this[m] = this[m].bind(this);
+    });
+  }
 
   handleDialClick(nodeID) {
     // Using handler, since Link in arrays cannot get router context
     this.context.router.push(`/nodes/${nodeID}`);
-  },
+  }
 
   getServiceSlicesConfig(node) {
     var config = [];
@@ -57,7 +52,7 @@ var NodesGridDials = React.createClass({
     });
 
     return config;
-  },
+  }
 
   getActiveSliceData(node) {
     var config = this.getServiceSlicesConfig(node);
@@ -70,7 +65,7 @@ var NodesGridDials = React.createClass({
     percentage = Math.round(percentage);
 
     config.push({
-      colorIndex: colors.unused,
+      colorIndex: COLOR_INDEX_UNUSED,
       name: "Unused",
       percentage: 100 - percentage
     });
@@ -79,17 +74,17 @@ var NodesGridDials = React.createClass({
       data: config,
       usedPercentage: percentage
     };
-  },
+  }
 
   getInactiveSliceData() {
     return [
       {
-        colorIndex: colors.error,
+        colorIndex: COLOR_INDEX_ERROR,
         name: "Error",
         percentage: 100
       }
     ];
-  },
+  }
 
   getDialConfig(node) {
     const { selectedResource } = this.props;
@@ -119,7 +114,7 @@ var NodesGridDials = React.createClass({
         )
       };
     }
-  },
+  }
 
   getDials() {
     return this.props.hosts.map(node => {
@@ -157,7 +152,7 @@ var NodesGridDials = React.createClass({
         </a>
       );
     });
-  },
+  }
 
   // Zero-height spacer items force dial charts in the last line of the flex layout
   // not to spread themselves across the line.
@@ -167,7 +162,7 @@ var NodesGridDials = React.createClass({
       .map(function(v, index) {
         return <div className="nodes-grid-dials-spacer" key={index} />;
       });
-  },
+  }
 
   render() {
     return (
@@ -177,6 +172,19 @@ var NodesGridDials = React.createClass({
       </div>
     );
   }
-});
+}
+
+NodesGridDials.displayName = "NodesGridDials";
+
+NodesGridDials.propTypes = {
+  hosts: PropTypes.array.isRequired,
+  selectedResource: PropTypes.string.isRequired,
+  serviceColors: PropTypes.object.isRequired,
+  resourcesByFramework: PropTypes.object.isRequired
+};
+
+NodesGridDials.contextTypes = {
+  router: routerShape
+};
 
 module.exports = NodesGridDials;

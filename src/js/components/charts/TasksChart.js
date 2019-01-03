@@ -26,21 +26,14 @@ function getEmptyTaskData() {
   });
 }
 
-var TasksChart = React.createClass({
-  displayName: "TasksChart",
-
-  propTypes: {
-    // {TASK_RUNNING: 0, TASK_STAGING: 4}
-    tasks: PropTypes.object.isRequired
-  },
-
+class TasksChart extends React.Component {
   shouldComponentUpdate(nextProps) {
     var previousTasks = this.getTasks(this.props.tasks);
     var newTasks = this.getTasks(nextProps.tasks);
 
     // If equal, do not update
     return !isEqual(previousTasks, newTasks);
-  },
+  }
 
   getTaskInfo(tasks) {
     if (tasks.length === 0) {
@@ -85,13 +78,13 @@ var TasksChart = React.createClass({
         </div>
       );
     });
-  },
+  }
 
   getTotal(tasks) {
     return tasks.reduce(function(acc, task) {
       return acc + task.value;
     }, 0);
-  },
+  }
 
   getTasks(tasks = {}) {
     return DISPLAYED_TASK_KEYS.map(function(key) {
@@ -101,7 +94,7 @@ var TasksChart = React.createClass({
         value: tasks[key]
       };
     });
-  },
+  }
 
   getDialChart(tasks) {
     var total = this.getTotal(tasks);
@@ -115,7 +108,7 @@ var TasksChart = React.createClass({
         {this.getDialChartChildren(total)}
       </DialChart>
     );
-  },
+  }
 
   getDialChartChildren(total) {
     return (
@@ -126,7 +119,7 @@ var TasksChart = React.createClass({
         </Trans>
       </div>
     );
-  },
+  }
 
   render() {
     var tasks = this.getTasks(this.props.tasks);
@@ -138,6 +131,13 @@ var TasksChart = React.createClass({
       </div>
     );
   }
-});
+}
+
+TasksChart.displayName = "TasksChart";
+
+TasksChart.propTypes = {
+  // {TASK_RUNNING: 0, TASK_STAGING: 4}
+  tasks: PropTypes.object.isRequired
+};
 
 module.exports = TasksChart;

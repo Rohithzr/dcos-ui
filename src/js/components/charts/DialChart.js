@@ -2,6 +2,7 @@ import d3 from "d3";
 import PropTypes from "prop-types";
 import React from "react";
 import ReactDOM from "react-dom";
+import mixin from "reactjs-mixin";
 
 import DialSlice from "./DialSlice";
 import InternalStorageMixin from "../../mixins/InternalStorageMixin";
@@ -11,27 +12,7 @@ function getEmptyState() {
   return [{ colorIndex: 7, value: 1 }];
 }
 
-var DialChart = React.createClass({
-  displayName: "DialChart",
-
-  mixins: [InternalStorageMixin],
-
-  propTypes: {
-    // [{colorIndex: 0, name: 'Some Name', value: 4}]
-    data: PropTypes.array.isRequired,
-    slices: PropTypes.array,
-    duration: PropTypes.number,
-    value: PropTypes.string
-  },
-
-  getDefaultProps() {
-    return {
-      duration: 1000,
-      slices: [],
-      value: "value"
-    };
-  },
-
+class DialChart extends mixin(InternalStorageMixin) {
   componentWillMount() {
     var value = this.props.value;
     var data = Object.assign(
@@ -47,7 +28,7 @@ var DialChart = React.createClass({
     );
 
     this.internalStorage_set(data);
-  },
+  }
 
   componentWillUpdate(nextProps) {
     var slice = this.getSlice(this.props);
@@ -81,7 +62,7 @@ var DialChart = React.createClass({
           d3.select(this).style("visibility", "hidden");
         }
       });
-  },
+  }
 
   getNormalizedData(slices, data) {
     if (this.isEmpty(data)) {
@@ -104,7 +85,7 @@ var DialChart = React.createClass({
     var normalizedNamedData = Object.assign({}, namedSlices, namedData);
 
     return Object.values(normalizedNamedData);
-  },
+  }
 
   isEmpty(data) {
     var sumOfData = data.reduce(function(memo, datum) {
@@ -112,7 +93,7 @@ var DialChart = React.createClass({
     }, 0);
 
     return sumOfData === 0;
-  },
+  }
 
   getSlice(props) {
     var data = this.internalStorage_get();
@@ -122,7 +103,7 @@ var DialChart = React.createClass({
       .select(ReactDOM.findDOMNode(this))
       .selectAll("path")
       .data(data.pie(normalizedData));
-  },
+  }
 
   getRadius(props) {
     const smallSide = Math.min(
@@ -131,7 +112,7 @@ var DialChart = React.createClass({
     );
 
     return smallSide / 2;
-  },
+  }
 
   getArcs(props) {
     var radius = this.getRadius(props);
@@ -147,13 +128,13 @@ var DialChart = React.createClass({
         .innerRadius(radius),
       innerRadius: radius * 0.5
     };
-  },
+  }
 
   getPosition() {
     return (
       "translate(" + this.props.width / 2 + "," + this.props.height / 2 + ")"
     );
-  },
+  }
 
   getWedges() {
     var data = this.internalStorage_get();
@@ -174,7 +155,7 @@ var DialChart = React.createClass({
         />
       );
     });
-  },
+  }
 
   render() {
     return (
@@ -192,6 +173,22 @@ var DialChart = React.createClass({
       </div>
     );
   }
-});
+}
+
+DialChart.displayName = "DialChart";
+
+DialChart.propTypes = {
+  // [{colorIndex: 0, name: 'Some Name', value: 4}]
+  data: PropTypes.array.isRequired,
+  slices: PropTypes.array,
+  duration: PropTypes.number,
+  value: PropTypes.string
+};
+
+DialChart.defaultProps = {
+  duration: 1000,
+  slices: [],
+  value: "value"
+};
 
 module.exports = DialChart;
