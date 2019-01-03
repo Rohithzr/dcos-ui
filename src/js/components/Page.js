@@ -8,7 +8,6 @@ import { MountService } from "foundation-ui";
 import BasePageHeader from "../components/PageHeader";
 import FluidGeminiScrollbar from "./FluidGeminiScrollbar";
 import InternalStorageMixin from "../mixins/InternalStorageMixin";
-import ScrollbarUtil from "../utils/ScrollbarUtil";
 import TemplateUtil from "../utils/TemplateUtil";
 
 const PageHeader = ({
@@ -71,10 +70,6 @@ class Page extends mixin(InternalStorageMixin, StoreMixin) {
     });
     this.forceUpdate();
   }
-
-  onSidebarStoreWidthChange() {
-    ScrollbarUtil.updateWithRef(this.refs.gemini);
-  },
 
   getChildren() {
     var data = this.internalStorage_get();
