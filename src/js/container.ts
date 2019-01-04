@@ -1,3 +1,4 @@
+import "reflect-metadata"; // Needed for inversify
 import { ContainerModule } from "inversify";
 import { Container, bindExtensionProvider } from "extension-kid";
 
