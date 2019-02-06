@@ -24,12 +24,12 @@ describe("Network Nodes Client", () => {
     "emits an event when the data is received",
     marbles(m => {
       const expectedResult = [
-        JSON.stringify({
+        {
           updated: "2019-02-04T14:17:12.697Z",
           public_ips: ["18.185.33.115"],
           private_ip: "10.0.6.192",
           hostname: "ip-10-0-6-192"
-        })
+        }
       ];
       const expected$ = m.cold("--(j|)", {
         j: {
