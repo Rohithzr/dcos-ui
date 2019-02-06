@@ -2,7 +2,7 @@ import * as React from "react";
 import { Trans } from "@lingui/macro";
 import { Cell } from "@dcos/ui-kit";
 import { Dropdown, Tooltip } from "reactjs-components";
-import { Hooks } from "PluginSDK";
+import { Hooks } from "#SRC/js/plugin-bridge/PluginSDK";
 
 import { isSDKService } from "#SRC/js/utils/ServiceUtil";
 import Icon from "#SRC/js/components/Icon";
@@ -21,6 +21,72 @@ import {
   SCALE,
   STOP
 } from "../constants/ServiceActionItem";
+import ServicesTable from "/home/georgi/dcos/dcos-ui/plugins/services/src/js/containers/services/ServicesTable";
+
+function hasWebUI(service: Service | Pod | ServiceTree) {
+  return (
+    service instanceof Service &&
+    !isSDKService(service) &&
+    service.getWebURL() != null &&
+    service.getWebURL() !== ""
+  );
+}
+
+function onActionsItemSelection(
+  service: Service | Pod | ServiceTree,
+  actionItem: any
+): any {
+  const isGroup = service instanceof ServiceTree;
+  let containsSDKService = false;
+
+  if (isGroup) {
+    containsSDKService =
+      // #findItem will flatten the service tree
+      service.findItem((item: any) => {
+        return item instanceof Service && isSDKService(item);
+      }) != null;
+  }
+
+  if (
+    actionItem.id !== EDIT &&
+    actionItem.id !== DELETE &&
+    (containsSDKService || isSDKService(service)) &&
+    !Hooks.applyFilter(
+      "isEnabledSDKAction",
+      actionItem.id === EDIT || actionItem.id === OPEN,
+      actionItem.id
+    )
+  ) {
+    // ServiceActions.handleActionDisabledModalOpen(service, actionItem.id);
+  } else {
+    // ServiceActions.handleServiceAction(service, actionItem.id);
+  }
+}
+
+function renderServiceActionsDropdown(
+  service: Service | Pod | ServiceTree,
+  actions: any
+) {
+  return (
+    <Dropdown
+      anchorRight={true}
+      buttonClassName="button button-mini button-link"
+      dropdownMenuClassName="dropdown-menu"
+      dropdownMenuListClassName="dropdown-menu-list"
+      dropdownMenuListItemClassName="clickable"
+      wrapperClassName="dropdown flush-bottom table-cell-icon"
+      items={actions}
+      persistentID={MORE}
+      onItemSelection={onActionsItemSelection(service, actions)}
+      scrollContainer=".gm-scroll-view"
+      scrollContainerParentSelector=".gm-prevented"
+      // title="More actions"
+      transition={true}
+      transitionName="dropdown-menu"
+      disabled={service.getServiceStatus() === ServiceStatus.DELETING}
+    />
+  );
+}
 
 export function actionsRenderer(
   service: Service | Pod | ServiceTree
@@ -109,63 +175,4 @@ export function actionsRenderer(
       </Tooltip>
     </Cell>
   );
-}
-
-function renderServiceActionsDropdown(service: any, actions: any) {
-  return (
-    <Dropdown
-      anchorRight={true}
-      buttonClassName="button button-mini button-link"
-      dropdownMenuClassName="dropdown-menu"
-      dropdownMenuListClassName="dropdown-menu-list"
-      dropdownMenuListItemClassName="clickable"
-      wrapperClassName="dropdown flush-bottom table-cell-icon"
-      items={actions}
-      persistentID={MORE}
-      onItemSelection={onActionsItemSelection(service, actions)}
-      scrollContainer=".gm-scroll-view"
-      scrollContainerParentSelector=".gm-prevented"
-      // title="More actions"
-      transition={true}
-      transitionName="dropdown-menu"
-      disabled={service.getServiceStatus() === ServiceStatus.DELETING}
-    />
-  );
-}
-
-function hasWebUI(service: any) {
-  return (
-    service instanceof Service &&
-    !isSDKService(service) &&
-    service.getWebURL() != null &&
-    service.getWebURL() !== ""
-  );
-}
-
-function onActionsItemSelection(service: any, actionItem: any): any {
-  const isGroup = service instanceof ServiceTree;
-  let containsSDKService = false;
-
-  if (isGroup) {
-    containsSDKService =
-      // #findItem will flatten the service tree
-      service.findItem((item: any) => {
-        return item instanceof Service && isSDKService(item);
-      }) != null;
-  }
-
-  if (
-    actionItem.id !== EDIT &&
-    actionItem.id !== DELETE &&
-    (containsSDKService || isSDKService(service)) &&
-    !Hooks.applyFilter(
-      "isEnabledSDKAction",
-      actionItem.id === EDIT || actionItem.id === OPEN,
-      actionItem.id
-    )
-  ) {
-    // ServicesTable.handleActionDisabledModalOpen(service, actionItem.id);
-  } else {
-    // ServicesTable.handleServiceAction(service, actionItem.id);
-  }
 }

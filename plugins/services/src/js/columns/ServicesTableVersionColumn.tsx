@@ -1,6 +1,7 @@
 import * as React from "react";
 import { TextCell } from "@dcos/ui-kit";
 import { Tooltip } from "reactjs-components";
+import sort from "array-sort";
 
 import ServiceTableUtil from "../utils/ServiceTableUtil";
 import Pod from "../structs/Pod";
@@ -26,4 +27,21 @@ export function versionRenderer(
       </Tooltip>
     </TextCell>
   );
+}
+
+function compareServicesByVersion(a: any, b: any): number {
+  const displayVersionA: string =
+    ServiceTableUtil.getFormattedVersion(a).displayVersion || "";
+  const displayVersionB: string =
+    ServiceTableUtil.getFormattedVersion(b).displayVersion || "";
+
+  return displayVersionA
+    .toLowerCase()
+    .localeCompare(displayVersionB.toLowerCase());
+}
+
+const comparators = [compareServicesByVersion];
+export function versionSorter(data: any, sortDirection: any): any {
+  const reverse = sortDirection !== "ASC";
+  return sort(data, comparators, { reverse });
 }

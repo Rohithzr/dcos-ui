@@ -1,5 +1,6 @@
 import * as React from "react";
 import { NumberCell } from "@dcos/ui-kit";
+import sort from "array-sort";
 
 import Pod from "../structs/Pod";
 import Service from "../structs/Service";
@@ -16,4 +17,14 @@ export function cpuRenderer(
       <span>{Units.formatResource("cpus", resource)}</span>
     </NumberCell>
   );
+}
+
+function compareServicesByCpuUsage(a: any, b: any): number {
+  return a.getResources()[`cpus`] - b.getResources()[`cpus`];
+}
+
+const comparators = [compareServicesByCpuUsage];
+export function cpuSorter(data: any, sortDirection: any): any {
+  const reverse = sortDirection !== "ASC";
+  return sort(data, comparators, { reverse });
 }

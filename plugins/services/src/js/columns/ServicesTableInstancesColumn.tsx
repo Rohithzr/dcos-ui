@@ -2,6 +2,7 @@ import * as React from "react";
 import { Trans } from "@lingui/macro";
 import { TextCell } from "@dcos/ui-kit";
 import { Tooltip } from "reactjs-components";
+import sort from "array-sort";
 
 import Pod from "../structs/Pod";
 import Service from "../structs/Service";
@@ -38,4 +39,17 @@ export function instancesRenderer(
       </Tooltip>
     </TextCell>
   );
+}
+
+function compareServicesByRunningInstances(a: any, b: any): number {
+  const runningInstancesA = a.getRunningInstancesCount();
+  const runningInstancesB = b.getRunningInstancesCount();
+
+  return runningInstancesA - runningInstancesB;
+}
+
+const comparators = [compareServicesByRunningInstances];
+export function instancesSorter(data: any, sortDirection: any): any {
+  const reverse = sortDirection !== "ASC";
+  return sort(data, comparators, { reverse });
 }

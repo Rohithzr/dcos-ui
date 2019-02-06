@@ -1,6 +1,7 @@
 import * as React from "react";
 import { TextCell } from "@dcos/ui-kit";
 import { Link } from "react-router";
+import sort from "array-sort";
 
 import Icon from "#SRC/js/components/Icon";
 import ServiceTree from "../structs/ServiceTree";
@@ -11,7 +12,7 @@ import Pod from "../structs/Pod";
 export function nameRenderer(
   service: Service | Pod | ServiceTree
 ): React.ReactNode {
-  const id: number = encodeURIComponent(service.getId());
+  const id: string = encodeURIComponent(service.getId());
   const isGroup = service instanceof ServiceTree;
   const serviceLink = isGroup
     ? `/services/overview/${id}`
@@ -110,4 +111,17 @@ function hasWebUI(service: any): any {
     service.getWebURL() != null &&
     service.getWebURL() !== ""
   );
+}
+
+function compareServicesByName(a: any, b: any): number {
+  return a
+    .getId()
+    .toLowerCase()
+    .localeCompare(b.getId().toLowerCase());
+}
+
+const comparators = [compareServicesByName];
+export function nameSorter(data: any, sortDirection: any): any {
+  const reverse = sortDirection !== "ASC";
+  return sort(data, comparators, { reverse });
 }

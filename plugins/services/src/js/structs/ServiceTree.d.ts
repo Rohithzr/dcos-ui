@@ -5,7 +5,7 @@ export default class ServiceTree extends Tree {
   getQueue(): null;
   getRegions(): Array<any>;
   getHealth(): any;
-  getId(): Number;
+  getId(): string;
   getServiceFromTaskID(taskID: Number): any;
   getTaskFromTaskID(taskID: any): any;
   getItemParent(id: any, parent: any): any;

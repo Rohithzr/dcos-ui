@@ -1,6 +1,7 @@
 import * as React from "react";
 import { TextCell } from "@dcos/ui-kit";
 import { Tooltip } from "reactjs-components";
+import sort from "array-sort";
 
 import CompositeState from "#SRC/js/structs/CompositeState";
 import Pod from "../structs/Pod";
@@ -33,4 +34,17 @@ export function regionRenderer(
       </Tooltip>
     </TextCell>
   );
+}
+
+function compareNodesByRegion(a: any, b: any): number {
+  let regionA: string = a.getRegions[0] || "N/A";
+  let regionB: string = b.getRegions[0] || "N/A";
+
+  return regionA.toLowerCase().localeCompare(regionB.toLowerCase());
+}
+
+const comparators = [compareNodesByRegion];
+export function regionSorter(data: any, sortDirection: any): Node[] {
+  const reverse = sortDirection !== "ASC";
+  return sort(data, comparators, { reverse });
 }
