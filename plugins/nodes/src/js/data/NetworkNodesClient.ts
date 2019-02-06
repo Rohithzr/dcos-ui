@@ -9,9 +9,20 @@ export interface NetworkNode {
   hostname: string;
 }
 
+export const NetworkNodeSchema = `
+type NetworkNode {
+  updated: String
+  public_ips: [String]
+  private_ip: String
+  hostname: String
+}
+`;
+
 export type NetworkNodesResponse = NetworkNode[];
 
-export function fetchNetworkNodes(): Observable<RequestResponse<string[]>> {
+export function fetchNetworkNodes(): Observable<
+  RequestResponse<NetworkNodesResponse>
+> {
   const [success, error] = partition(
     (response: RequestResponse<any>) => response.code < 300
   )(request("/net/v1/nodes"));

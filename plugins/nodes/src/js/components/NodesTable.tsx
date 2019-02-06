@@ -28,7 +28,33 @@ import {
   spacingSizer,
   spacingRenderer
 } from "../columns/NodesTableSpacingColumn";
+import gql from "graphql-tag";
+import { default as test } from "../data/NetworkNodesResolver";
+import { graphqlObservable } from "@dcos/data-service";
+// console.log(test);
 
+const getGraphQL = (
+  privateIP: string
+): Observable<{ data: { service: Service } }> => {
+  return graphqlObservable(
+    gql`
+      query {
+        service(id: $serviceId) {
+          id
+          plans {
+            name
+            errors
+            phases
+            status
+            strategy
+          }
+        }
+      }
+    `,
+    schema,
+    { serviceId }
+  );
+};
 interface NodesTableProps {
   hosts: NodesList;
   nodeHealthResponse: boolean;
